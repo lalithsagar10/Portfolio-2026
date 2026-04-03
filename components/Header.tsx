@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import { site } from "@/lib/content";
-import { withBasePath } from "@/lib/paths";
 
 function readDarkClass() {
   return document.documentElement.classList.contains("dark");
@@ -115,7 +114,7 @@ export function Header() {
             ))}
             {site.resumePdf ? (
               <a
-                href={withBasePath(site.resumePdf)}
+                href={site.resumePdf}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`${navPill} border border-white/40 bg-white/25 dark:border-white/10 dark:bg-white/5`}
@@ -176,7 +175,7 @@ export function Header() {
             ))}
             {site.resumePdf ? (
               <a
-                href={withBasePath(site.resumePdf)}
+                href={site.resumePdf}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={closeMenu}
