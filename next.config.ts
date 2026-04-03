@@ -1,8 +1,10 @@
 import type { NextConfig } from "next";
+import { SITE_BASE_PATH } from "./lib/paths";
 
 const nextConfig: NextConfig = {
-  /** Emit a static site with `index.html` at `out/index.html` — upload the `out` folder to classic static hosts. */
   output: "export",
+  basePath: SITE_BASE_PATH,
+  assetPrefix: `${SITE_BASE_PATH}/`,
   images: {
     unoptimized: true,
   },

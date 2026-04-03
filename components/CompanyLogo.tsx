@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { withBasePath } from "@/lib/paths";
 
 function initialsFromCompany(name: string) {
   const alnum = name.replace(/[^a-zA-Z0-9\s.]/g, " ");
@@ -54,9 +55,9 @@ export function CompanyLogo({ logoSrc, name, href }: Props) {
     >
       {/* Remote favicon URLs; native img keeps onError fallback simple */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={logoSrc}
-        alt=""
+        <img
+          src={withBasePath(logoSrc)}
+          alt=""
         className="h-full w-full object-contain"
         onError={onImgError}
       />
