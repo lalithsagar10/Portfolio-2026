@@ -1,19 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { site } from "@/lib/content";
-
-function readDarkClass() {
-  return document.documentElement.classList.contains("dark");
-}
-
-function subscribeDarkClass(onChange: () => void) {
-  const el = document.documentElement;
-  const mo = new MutationObserver(() => onChange());
-  mo.observe(el, { attributes: true, attributeFilter: ["class"] });
-  return () => mo.disconnect();
-}
 
 const nav = [
   { href: "#about", label: "Summary" },
@@ -22,29 +11,20 @@ const nav = [
   { href: "#projects", label: "Projects" },
   { href: "#skills", label: "Skills" },
   { href: "#achievements", label: "Awards" },
+  { href: "#travel", label: "Travel" },
   { href: "#contact", label: "Contact" },
-];
+] as const;
 
-function SunIcon() {
-  return (
-    <svg className="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
-      <circle cx="12" cy="12" r="4" />
-      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" strokeLinecap="round" />
-    </svg>
-  );
-}
+const sectionIds = nav.map((item) => item.href.slice(1));
 
-function MoonIcon() {
-  return (
-    <svg className="h-[18px] w-[18px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
+/** Viewport line (px from top): section “wins” when its top has crossed this. */
+const SCROLL_ACTIVE_OFFSET = 100;
+
+type Highlight = { left: number; top: number; width: number; height: number };
 
 function MenuIcon() {
   return (
-    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
+    <svg className="h-5 w-5 sm:h-[22px] sm:w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
       <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
     </svg>
   );
@@ -52,7 +32,7 @@ function MenuIcon() {
 
 function CloseIcon() {
   return (
-    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
+    <svg className="h-5 w-5 sm:h-[22px] sm:w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
       <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
     </svg>
   );
@@ -60,16 +40,69 @@ function CloseIcon() {
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const dark = useSyncExternalStore(subscribeDarkClass, readDarkClass, () => false);
+  const [activeSection, setActiveSection] = useState<string>(sectionIds[0]);
+  const [highlight, setHighlight] = useState<Highlight | null>(null);
 
-  const toggleTheme = useCallback(() => {
-    const next = !readDarkClass();
-    document.documentElement.classList.toggle("dark", next);
-    try {
-      localStorage.setItem("theme", next ? "dark" : "light");
-    } catch {
-      /* ignore */
+  const navInnerRef = useRef<HTMLDivElement>(null);
+  const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
+
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+
+  const updateHighlight = useCallback(() => {
+    const inner = navInnerRef.current;
+    const link = linkRefs.current[activeSection];
+    if (!inner || !link) {
+      setHighlight(null);
+      return;
     }
+    setHighlight({
+      left: link.offsetLeft,
+      top: link.offsetTop,
+      width: link.offsetWidth,
+      height: link.offsetHeight,
+    });
+  }, [activeSection]);
+
+  useLayoutEffect(() => {
+    updateHighlight();
+  }, [updateHighlight, menuOpen]);
+
+  useEffect(() => {
+    const inner = navInnerRef.current;
+    if (!inner) return;
+    const ro = new ResizeObserver(() => updateHighlight());
+    ro.observe(inner);
+    window.addEventListener("resize", updateHighlight);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", updateHighlight);
+    };
+  }, [updateHighlight]);
+
+  useEffect(() => {
+    let raf = 0;
+    const compute = () => {
+      let current = sectionIds[0];
+      for (const id of sectionIds) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        const { top } = el.getBoundingClientRect();
+        if (top <= SCROLL_ACTIVE_OFFSET) current = id;
+      }
+      setActiveSection((prev) => (prev === current ? prev : current));
+    };
+
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(compute);
+    };
+
+    compute();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
   useEffect(() => {
@@ -80,60 +113,82 @@ export function Header() {
     };
   }, [menuOpen]);
 
-  const closeMenu = useCallback(() => setMenuOpen(false), []);
+  const setSectionFromClick = useCallback((href: string) => {
+    if (href.startsWith("#")) setActiveSection(href.slice(1));
+  }, []);
 
   const glassBar =
-    "rounded-xl border border-white/55 bg-white/35 shadow-[0_4px_24px_-8px_rgba(15,23,42,0.1),inset_0_1px_0_rgba(255,255,255,0.65)] backdrop-blur-2xl backdrop-saturate-[1.35] dark:border-white/[0.12] dark:bg-stone-950/45 dark:shadow-[0_8px_32px_-12px_rgba(0,0,0,0.55),inset_0_1px_0_rgba(255,255,255,0.06)]";
+    "rounded-2xl border border-white/55 bg-white/40 shadow-[0_6px_28px_-10px_rgba(15,23,42,0.12),inset_0_1px_0_rgba(255,255,255,0.7)] backdrop-blur-2xl backdrop-saturate-[1.35]";
 
   const glassBtn =
-    "inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/50 bg-white/30 text-stone-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.5)] backdrop-blur-xl transition-[transform,background-color,border-color] duration-200 hover:scale-[1.03] hover:bg-white/50 active:scale-[0.98] dark:border-white/10 dark:bg-white/5 dark:text-stone-100 dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] dark:hover:bg-white/10 [&_svg]:h-[15px] [&_svg]:w-[15px]";
+    "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/50 bg-white/35 text-stone-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)] backdrop-blur-xl transition-[transform,background-color,border-color] duration-200 hover:scale-[1.03] hover:bg-white/55 active:scale-[0.98]";
 
   const navPill =
-    "shrink-0 whitespace-nowrap rounded-full px-2.5 py-1 text-[11px] font-medium tracking-tight text-stone-700 transition-[background-color,color,transform] duration-200 hover:bg-white/55 hover:text-stone-900 active:scale-[0.98] sm:px-3 sm:text-xs dark:text-stone-200 dark:hover:bg-white/10 dark:hover:text-white";
+    "relative z-10 shrink-0 whitespace-nowrap rounded-full px-3 py-2 text-xs font-medium tracking-tight text-stone-800 transition-[color,transform] duration-200 hover:text-stone-900 active:scale-[0.98] sm:px-3.5 sm:py-2 sm:text-[13px]";
+
+  const highlightClass =
+    "pointer-events-none absolute z-0 rounded-full bg-gradient-to-r from-white/75 via-amber-50/50 to-white/75 shadow-[0_2px_14px_-4px_rgba(120,113,108,0.25),inset_0_1px_0_rgba(255,255,255,0.9)] ring-1 ring-white/70 transition-[left,top,width,height,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none";
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 px-3 pt-2 sm:px-5 sm:pt-2.5">
-        <div className={`flex h-9 w-full items-center gap-2 px-2.5 sm:h-10 sm:gap-3 sm:px-4 ${glassBar}`}>
+      <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6 sm:pt-3.5">
+        <div className={`flex min-h-12 h-12 w-full items-center gap-2.5 px-3 sm:min-h-14 sm:h-14 sm:gap-3 sm:px-5 ${glassBar}`}>
           <Link
             href="#"
             onClick={closeMenu}
-            className="shrink-0 rounded-full px-2 py-0.5 font-serif text-sm font-medium tracking-tight text-stone-900 transition-opacity hover:opacity-70 dark:text-stone-50 sm:text-[15px]"
+            className="shrink-0 rounded-full px-2.5 py-1 font-serif text-[15px] font-medium uppercase tracking-tight text-stone-900 transition-opacity hover:opacity-70 sm:text-base"
           >
-            {site.name.split(" ")[0]}
+            {site.name.split(" ").filter(Boolean).slice(-1)[0] ?? site.name}
           </Link>
 
           <nav
-            className="nav-scrollbar hidden min-h-0 min-w-0 flex-1 items-center justify-center gap-0.5 overflow-x-auto sm:gap-1 lg:flex"
+            className="nav-scrollbar relative hidden min-h-0 min-w-0 flex-1 overflow-x-auto lg:block"
             aria-label="Primary"
           >
-            {nav.map((item) => (
-              <Link key={item.href} href={item.href} className={navPill}>
-                {item.label}
-              </Link>
-            ))}
-            {site.resumePdf ? (
-              <a
-                href={site.resumePdf}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`${navPill} border border-white/40 bg-white/25 dark:border-white/10 dark:bg-white/5`}
-              >
-                Résumé
-              </a>
-            ) : null}
+            <div
+              ref={navInnerRef}
+              className="relative mx-auto flex min-h-11 w-max max-w-full items-center justify-center gap-1 sm:min-h-12 sm:gap-1.5"
+            >
+              {highlight && highlight.width > 0 ? (
+                <span
+                  aria-hidden
+                  className={highlightClass}
+                  style={{
+                    left: highlight.left,
+                    top: highlight.top,
+                    width: highlight.width,
+                    height: highlight.height,
+                    opacity: 1,
+                  }}
+                />
+              ) : null}
+              {nav.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  ref={(el) => {
+                    linkRefs.current[item.href.slice(1)] = el;
+                  }}
+                  className={navPill}
+                  onClick={() => setSectionFromClick(item.href)}
+                >
+                  {item.label}
+                </Link>
+              ))}
+              {site.resumePdf ? (
+                <a
+                  href={site.resumePdf}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${navPill} border border-white/40 bg-white/20 hover:bg-stone-900/10`}
+                >
+                  Resume
+                </a>
+              ) : null}
+            </div>
           </nav>
 
           <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-1.5 lg:ml-0">
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className={glassBtn}
-              aria-label={dark ? "Switch to light mode" : "Switch to dark mode"}
-            >
-              {dark ? <SunIcon /> : <MoonIcon />}
-            </button>
-
             <button
               type="button"
               className={`${glassBtn} lg:hidden`}
@@ -155,35 +210,35 @@ export function Header() {
       >
         <button
           type="button"
-          className={`absolute inset-0 bg-stone-900/20 backdrop-blur-sm transition-opacity duration-300 dark:bg-black/50 ${menuOpen ? "opacity-100" : "opacity-0"}`}
+          className={`absolute inset-0 bg-stone-900/20 backdrop-blur-sm transition-opacity duration-300 ${menuOpen ? "opacity-100" : "opacity-0"}`}
           onClick={closeMenu}
           aria-label="Close menu overlay"
         />
         <div
-          className={`absolute left-3 right-3 top-[3.25rem] overflow-hidden rounded-2xl border border-white/50 bg-white/40 shadow-[0_24px_64px_-16px_rgba(15,23,42,0.25)] backdrop-blur-2xl backdrop-saturate-[1.4] transition-[opacity,transform] duration-300 ease-out dark:border-white/10 dark:bg-stone-950/55 dark:shadow-[0_24px_64px_-12px_rgba(0,0,0,0.7)] sm:left-4 sm:right-4 sm:top-14 ${menuOpen ? "translate-y-0 opacity-100" : "-translate-y-3 opacity-0"}`}
+          className={`absolute left-3 right-3 top-[4.5rem] overflow-hidden rounded-2xl border border-white/50 bg-white/40 shadow-[0_24px_64px_-16px_rgba(15,23,42,0.25)] backdrop-blur-2xl backdrop-saturate-[1.4] transition-[opacity,transform] duration-300 ease-out sm:left-4 sm:right-4 sm:top-[4.75rem] ${menuOpen ? "translate-y-0 opacity-100" : "-translate-y-3 opacity-0"}`}
         >
           <nav className="flex max-h-[min(70vh,520px)] flex-col gap-1 overflow-y-auto p-3" aria-label="Mobile primary">
-            {nav.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={closeMenu}
-                className="rounded-2xl px-4 py-3.5 text-base font-medium text-stone-800 transition-colors hover:bg-white/60 dark:text-stone-100 dark:hover:bg-white/10"
-              >
-                {item.label}
-              </Link>
-            ))}
-            {site.resumePdf ? (
-              <a
-                href={site.resumePdf}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={closeMenu}
-                className="rounded-2xl px-4 py-3.5 text-base font-medium text-stone-800 transition-colors hover:bg-white/60 dark:text-stone-100 dark:hover:bg-white/10"
-              >
-                Resume
-              </a>
-            ) : null}
+            {nav.map((item) => {
+              const id = item.href.slice(1);
+              const isActive = activeSection === id;
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => {
+                    setSectionFromClick(item.href);
+                    closeMenu();
+                  }}
+                  className={`rounded-2xl px-4 py-3.5 text-base font-medium transition-[background-color,box-shadow,color] duration-300 ease-out ${
+                    isActive
+                      ? "bg-gradient-to-r from-white/80 via-amber-50/45 to-white/80 text-stone-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] ring-1 ring-white/60"
+                      : "text-stone-800 hover:bg-white/55"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
           </nav>
         </div>
       </div>

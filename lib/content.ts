@@ -1,5 +1,5 @@
 export const site = {
-  name: "Lalith Sagar Kambala",
+  name: "LALITH SAGAR KAMBALA",
   role: "Software Engineer",
   tagline:
     "Founder mindset in 0→1 environments—owning problems end-to-end and turning ideas into reliable products.",
@@ -10,6 +10,14 @@ export const site = {
   relocate: "Open to relocate",
   /** File under `public/` — use a path like `/Resume/your-file.pdf`. Set null to hide. Opens in a new tab. */
   resumePdf: "/Resume/Resume_SE_Lalith.pdf" as string | null,
+  /**
+   * Hero background video. Prefer **MP4 (H.264)** for every browser + smaller files.
+   * `.mov` often works in Safari; Chrome/Edge/Firefox may fail depending on codec.
+   * Local file: place under `public/videos/` (e.g. `/videos/hero.MOV`). `null` = no video.
+   */
+  heroVideoSrc: "/videos/hero.mp4" as string | null,
+  /** Shown in the header and as a caption on the hero background video when `heroVideoSrc` is set. */
+  heroVideoLocation: "Aspen, Colorado" as string | null,
   social: [
     { label: "LinkedIn", href: "https://www.linkedin.com/in/lalith-sagar-kambala-48a597199/" },
     { label: "GitHub", href: "https://github.com/lalithsagar10" },
@@ -17,10 +25,34 @@ export const site = {
 } as const;
 
 export const summary = {
+  /** Short line under the Summary heading (optional tone-setter). */
+  kicker: "Wanderer at heart · builder by trade",
   paragraphs: [
-    "Software Engineer with a founder mindset who thrives in 0→1 environments, owning problems end-to-end and turning fuzzy ideas into reliable products. I care deeply about user experience, move quickly with high standards, and balance experimentation with pragmatic, production-ready engineering.",
+    "I'm a curious wanderer at heart and a builder by trade—a software engineer who lives for road trips, bold ideas, and end-to-end systems that move the needle. Whether I'm shaping architecture across platforms or rolling up my sleeves on a gnarly bug, I bring real ownership, a creative streak, and a bias for action. I thrive where curiosity meets craft, and where the bar for reliability and user experience stays high.",
+    "My journey so far has been a patchwork of hands-on wins—shipping features, closing the loop on issues, and helping shape dependable products where purpose and human-centered design go hand in hand. Outside the code, I'm drawn to social causes and community work, because technology at its best doesn't just connect systems—it brings people together and leaves room for impact beyond the roadmap.",
   ],
 } as const;
+
+/** One slide in the Travel carousel — use the same `public/videos/` folder as the hero (or any `public/` path). */
+export type TravelMoment =
+  | { kind: "image"; src: string; alt?: string; caption?: string }
+  | { kind: "video"; src: string; caption?: string; poster?: string };
+
+/**
+ * Photos & videos from trips. Add files under `public/videos/` next to the hero clip.
+ *
+ * Examples:
+ * `{ kind: "image", src: "/videos/aspen.jpg", alt: "Mountain view", caption: "Aspen, Colorado" }`
+ * `{ kind: "video", src: "/videos/travel-clip.mp4", poster: "/videos/travel-clip-poster.jpg", caption: "Golden hour" }`
+ */
+export const travelMoments: TravelMoment[] = [
+  { kind: "video", src: "/videos/vid1.mp4" },
+  { kind: "video", src: "/videos/vid2.MP4" },
+  { kind: "video", src: "/videos/vid3.MP4" },
+  { kind: "video", src: "/videos/vid4.MP4" },
+  { kind: "video", src: "/videos/vid5.MP4" },
+  { kind: "video", src: "/videos/hero1.Mp4" },
+];
 
 /** Site favicon as logo (swap for a file under `/public/companies/` for sharper art). */
 const favLogo = (domain: string) =>

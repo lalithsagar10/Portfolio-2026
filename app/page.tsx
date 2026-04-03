@@ -3,6 +3,7 @@ import { Achievements } from "@/components/Achievements";
 import { Contact } from "@/components/Contact";
 import { Education } from "@/components/Education";
 import { Experience } from "@/components/Experience";
+import { Travel } from "@/components/Travel";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
@@ -34,6 +35,9 @@ export default function Home() {
         </div>
         <div className="animate-fade-up animate-delay-3">
           <Achievements />
+        </div>
+        <div className="animate-fade-up animate-delay-3">
+          <Travel />
         </div>
         <div className="animate-fade-up animate-delay-3">
           <Contact />
