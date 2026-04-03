@@ -115,8 +115,9 @@ export function Header() {
             {site.resumePdf ? (
               <a
                 href={site.resumePdf}
+                target="_blank"
+                rel="noopener noreferrer"
                 className={`${navPill} border border-white/40 bg-white/25 dark:border-white/10 dark:bg-white/5`}
-                download
               >
                 Résumé
               </a>
@@ -175,11 +176,12 @@ export function Header() {
             {site.resumePdf ? (
               <a
                 href={site.resumePdf}
-                download
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={closeMenu}
                 className="rounded-2xl px-4 py-3.5 text-base font-medium text-stone-800 transition-colors hover:bg-white/60 dark:text-stone-100 dark:hover:bg-white/10"
               >
-                Download résumé
+                Resume
               </a>
             ) : null}
           </nav>

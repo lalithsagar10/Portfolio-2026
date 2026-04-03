@@ -8,8 +8,8 @@ export const site = {
   email: "lalithsagarkambala@gmail.com",
   location: "KS, United States",
   relocate: "Open to relocate",
-  /** Add `public/resume.pdf` or set to null to hide download buttons */
-  resumePdf: "/resume.pdf" as string | null,
+  /** File under `public/` — use a path like `/Resume/your-file.pdf`. Set null to hide. Opens in a new tab. */
+  resumePdf: "/Resume/Resume_SE_Lalith.pdf" as string | null,
   social: [
     { label: "LinkedIn", href: "https://www.linkedin.com/in/lalith-sagar-kambala-48a597199/" },
     { label: "GitHub", href: "https://github.com/lalithsagar10" },
@@ -55,7 +55,7 @@ export const experience = [
     company: "Todaiyo.ai",
     companyLogo: favLogo("todaiyo.ai"),
     companyLinkedIn: "https://www.linkedin.com/company/todaiyo/",
-    location: "United States",
+    location: "MA, United States",
     period: "Sep 2025 – Present",
     bullets: [
       "Owned and scaled backend systems end-to-end, from architecture and API design through deployment and monitoring, while collaborating closely on UI/UX flows for fast, intuitive experiences.",
@@ -67,9 +67,9 @@ export const experience = [
   {
     role: "AI Full Stack Engineer (Part-time)",
     company: "Consumer Genie",
-    companyLogo: favLogo("consumergenie.com"),
+    companyLogo: "/companies/Consumergenie.jpeg",
     companyLinkedIn: "https://www.linkedin.com/company/consumergenie/",
-    location: "United States",
+    location: "Delaware, United States",
     period: "Sep 2025 – Present",
     bullets: [
       "Architected an agentic AI-powered shopping platform that reduced cross-site product research time by 40%, using LangGraph for multi-agent reasoning (search, summarization, ranking, comparison).",
@@ -84,7 +84,7 @@ export const experience = [
     companyLogo: favLogo("iejl.org"),
     companyLinkedIn:
       "https://www.linkedin.com/company/international-economic-justice-league-inc/",
-    location: "United States",
+    location: "California, United States",
     period: "Jul 2025 – Oct 2025",
     bullets: [
       "Engineered full-stack apps and internal tools with Next.js, TypeScript, and Tailwind CSS—improving UI load times by ~30% and delivering scalable APIs with real-time updates and Supabase-backed PostgreSQL sync (~25% better sync efficiency).",

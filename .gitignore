@@ -15,6 +15,7 @@
 
 # next.js
 /.next/
+# Static export (`output: "export"`): deploy the `out/` folder — it contains `index.html` and assets.
 /out/
 
 # production
