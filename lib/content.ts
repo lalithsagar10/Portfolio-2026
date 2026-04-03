@@ -51,7 +51,7 @@ export const travelMoments: TravelMoment[] = [
   { kind: "video", src: "/videos/vid3.MP4" },
   { kind: "video", src: "/videos/vid4.MP4" },
   { kind: "video", src: "/videos/vid5.MP4" },
-  { kind: "video", src: "/videos/hero1.Mp4" },
+  { kind: "video", src: "/videos/hero1.mp4" },
 ];
 
 /** Site favicon as logo (swap for a file under `/public/companies/` for sharper art). */
