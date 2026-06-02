@@ -133,12 +133,8 @@ export const experience = [
     location: "India",
     period: "Jun 2022 – Dec 2022",
     bullets: [
-      "Developed and maintained backend integrations between EHR systems and healthcare appointment platforms, improving
-appointment processing efficiency by 35% through optimized REST API workflows and data synchronization.
-• Engineered scalable backend services and database query optimizations that reduced data inconsistencies by 40% while
-supporting real-time patient record updates and appointment scheduling across multiple healthcare systems.
-• Implemented secure API integration and backend consistency checks for healthcare applications, improving system reliability
-by 30% and enabling seamless management of 10,000+ appointment transactions and patient record requests.",
+      "Developed and maintained backend integrations between EHR systems and healthcare appointment platforms, improving appointment processing efficiency by 35% through optimized REST API workflows and data synchronization.",
+      "Engineered scalable backend services and database query optimizations that reduced data inconsistencies by 40% while supporting real-time patient record updates and appointment scheduling across multiple healthcare systems.",
     ],
   },
 ] as const;
