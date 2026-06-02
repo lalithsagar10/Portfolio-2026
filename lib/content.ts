@@ -131,11 +131,14 @@ export const experience = [
     companyLogo: favLogo("coincent.ai"),
     companyLinkedIn: "https://www.linkedin.com/company/coincent-ai/",
     location: "India",
-    period: "Sep 2022 – Nov 2022",
+    period: "Jun 2022 – Dec 2022",
     bullets: [
-      "Built a Job Portal Management System with optimized MySQL queries and modular front-end components—cutting job posting and record processing time by ~30%.",
-      "Validated mobile-first flows and cross-browser compatibility; supported Java (Spring Boot) APIs and monitoring—stronger accessibility (~95% of users) and ~20% lower bounce rates.",
-      "Maintained ~99% uptime through automated error monitoring and rapid resolution during high traffic.",
+      "Developed and maintained backend integrations between EHR systems and healthcare appointment platforms, improving
+appointment processing efficiency by 35% through optimized REST API workflows and data synchronization.
+• Engineered scalable backend services and database query optimizations that reduced data inconsistencies by 40% while
+supporting real-time patient record updates and appointment scheduling across multiple healthcare systems.
+• Implemented secure API integration and backend consistency checks for healthcare applications, improving system reliability
+by 30% and enabling seamless management of 10,000+ appointment transactions and patient record requests.",
     ],
   },
 ] as const;
