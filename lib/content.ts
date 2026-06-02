@@ -9,7 +9,7 @@ export const site = {
   location: "KS, United States",
   relocate: "Open to relocate",
   /** File under `public/` — use a path like `/Resume/your-file.pdf`. Set null to hide. Opens in a new tab. */
-  resumePdf: "/Resume/Resume_SE_Lalith.pdf" as string | null,
+  resumePdf: "/Resume/Resume-Engineer-Kambala.pdf" as string | null,
   /**
    * Hero background video. Prefer **MP4 (H.264)** for every browser + smaller files.
    * `.mov` often works in Safari; Chrome/Edge/Firefox may fail depending on codec.
