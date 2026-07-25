@@ -9,11 +9,14 @@ import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { Projects } from "@/components/Projects";
 import { Skills } from "@/components/Skills";
+import { getResumeHref } from "@/lib/resume";
 
 export default function Home() {
+  const resumeHref = getResumeHref();
+
   return (
     <div className="flex min-h-full flex-col">
-      <Header />
+      <Header resumeHref={resumeHref} />
       <main className="flex-1">
         <div className="animate-fade-up">
           <Hero />

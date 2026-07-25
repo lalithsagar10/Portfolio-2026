@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     template: "%s — Portfolio",
   },
   description:
-    "Software engineer — full-stack, AI, and 0→1 product work. KS, USA; open to relocate.",
+    "Software engineer — full-stack, AI, and 0→1 product work. Austin, TX.",
 };
 
 export default function RootLayout({

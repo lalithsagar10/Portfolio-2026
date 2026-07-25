@@ -6,10 +6,7 @@ export const site = {
   phone: "(913) 488-0303",
   phoneTel: "+19134880303",
   email: "lalithsagarkambala@gmail.com",
-  location: "KS, United States",
-  relocate: "Open to relocate",
-  /** File under `public/` — use a path like `/Resume/your-file.pdf`. Set null to hide. Opens in a new tab. */
-  resumePdf: "/Resume/Resume-Engineer-Kambala.pdf" as string | null,
+  location: "Austin, TX",
   /**
    * Hero background video. Prefer **MP4 (H.264)** for every browser + smaller files.
    * `.mov` often works in Safari; Chrome/Edge/Firefox may fail depending on codec.
@@ -83,12 +80,21 @@ export const education = [
 
 export const experience = [
   {
+    role: "Software Engineer",
+    company: "Relativity, Inc",
+    companyLogo: "/companies/relativityinc.jpeg",
+    companyLinkedIn: "https://www.linkedin.com/company/relativityinc/",
+    location: "Austin, TX",
+    period: "Jul 2026 – Present",
+    bullets: [],
+  },
+  {
     role: "Founding Software Engineer",
     company: "Todaiyo.ai",
     companyLogo: favLogo("todaiyo.ai"),
     companyLinkedIn: "https://www.linkedin.com/company/todaiyo/",
     location: "MA, United States",
-    period: "Sep 2025 – Present",
+    period: "Sep 2025 – Jun 2026",
     bullets: [
       "Owned and scaled backend systems end-to-end, from architecture and API design through deployment and monitoring, while collaborating closely on UI/UX flows for fast, intuitive experiences.",
       "Built asynchronous, event-driven workflows with queues and workers for concurrent AI-powered requests and real-time user interactions under production traffic.",

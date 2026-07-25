@@ -22,6 +22,11 @@ const SCROLL_ACTIVE_OFFSET = 100;
 
 type Highlight = { left: number; top: number; width: number; height: number };
 
+type HeaderProps = {
+  /** Public URL for the résumé PDF in `public/Resume/`, or null to hide the button. */
+  resumeHref: string | null;
+};
+
 function MenuIcon() {
   return (
     <svg className="h-5 w-5 sm:h-[22px] sm:w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
@@ -38,7 +43,7 @@ function CloseIcon() {
   );
 }
 
-export function Header() {
+export function Header({ resumeHref }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState<string>(sectionIds[0]);
   const [highlight, setHighlight] = useState<Highlight | null>(null);
@@ -175,9 +180,9 @@ export function Header() {
                   {item.label}
                 </Link>
               ))}
-              {site.resumePdf ? (
+              {resumeHref ? (
                 <a
-                  href={site.resumePdf}
+                  href={resumeHref}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`${navPill} border border-white/40 bg-white/20 hover:bg-stone-900/10`}

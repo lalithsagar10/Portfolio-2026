@@ -27,7 +27,7 @@ export function Contact() {
           </Link>
         </div>
         <p className="mt-4 text-sm text-stone-500">
-          {site.location} · {site.relocate}
+          {site.location}
         </p>
         <ul className="mt-10 flex flex-wrap gap-6 text-sm font-medium text-stone-600">
           {site.social.map((s) => (

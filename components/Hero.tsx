@@ -61,7 +61,7 @@ export function Hero() {
           {site.name}
         </h1>
         <p className="mt-4 text-base text-stone-700 sm:text-lg">
-          {site.location} · {site.relocate}
+          {site.location}
         </p>
 
         <div className="mt-6 flex flex-wrap items-center justify-center gap-2 sm:gap-3">

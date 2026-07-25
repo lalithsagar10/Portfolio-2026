@@ -31,7 +31,7 @@ After `npm run dev`, open [http://localhost:3000](http://localhost:3000).
 
 Almost all copy, links, and media paths live in **`lib/content.ts`**:
 
-- **`site`** — name, role, tagline, contact, social links, résumé PDF, hero video path & location caption
+- **`site`** — name, role, tagline, contact, social links, hero video path & location caption
 - **`summary`** — About / Summary section (`kicker` + `paragraphs`)
 - **`travelMoments`** — Travel carousel entries (`/videos/...` under `public/videos/`)
 - **`experience`**, **`education`**, **`projects`**, **`skills`**, **`achievements`** — respective sections
@@ -41,7 +41,7 @@ Almost all copy, links, and media paths live in **`lib/content.ts`**:
 | Location            | Use case                          |
 | ------------------- | --------------------------------- |
 | `public/videos/`    | Hero background + travel clips    |
-| `public/Resume/`    | Résumé PDF                        |
+| `public/Resume/`    | Résumé PDF (keep **one** file; the Resume button picks it up by whatever name) |
 | `public/companies/` | Logos referenced in content       |
 
 Hero video: prefer **MP4 (H.264)** for broad browser support; see comments in `content.ts` for `.mov` caveats.
@@ -51,7 +51,7 @@ Hero video: prefer **MP4 (H.264)** for broad browser support; see comments in `c
 ```
 app/           # App Router — layout, page, global styles
 components/    # UI sections (Hero, Header, Travel, etc.)
-lib/           # content.ts, video MIME helper
+lib/           # content.ts, resume resolver, video MIME helper
 public/        # Static files served as-is
 ```
 
