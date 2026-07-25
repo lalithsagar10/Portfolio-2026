@@ -131,7 +131,7 @@ export const experience = [
     companyLogo: favLogo("coincent.ai"),
     companyLinkedIn: "https://www.linkedin.com/company/coincent-ai/",
     location: "India",
-    period: "Jun 2022 – Dec 2022",
+    period: "Sep 2022 – Nov 2022",
     bullets: [
       "Developed and maintained backend integrations between EHR systems and healthcare appointment platforms, improving appointment processing efficiency by 35% through optimized REST API workflows and data synchronization.",
       "Engineered scalable backend services and database query optimizations that reduced data inconsistencies by 40% while supporting real-time patient record updates and appointment scheduling across multiple healthcare systems.",
