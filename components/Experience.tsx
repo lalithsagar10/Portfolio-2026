@@ -1,54 +1,85 @@
-import { CompanyLogo } from "@/components/CompanyLogo";
+"use client";
+
+import { useState } from "react";
+import { AppGrid, AppIcon, AppIconFace } from "@/components/AppIcon";
+import { DetailSheet } from "@/components/DetailSheet";
 import { experience } from "@/lib/content";
 
 export function Experience() {
+  const [active, setActive] = useState<number | null>(null);
+  const job = active !== null ? experience[active] : null;
+
   return (
-    <section
-      id="experience"
-      className="scroll-mt-20 border-t border-stone-200/80 px-6 py-20 sm:px-8 sm:py-28"
-    >
-      <div className="mx-auto max-w-3xl">
-        <h2 className="font-serif text-3xl font-medium tracking-tight text-stone-900 sm:text-4xl">Experience</h2>
-        <p className="mt-3 text-sm text-stone-500 sm:text-base">
-          Roles where I shipped full-stack systems, AI products, and resilient backends.
-        </p>
-        <ol className="mt-12 space-y-12">
-          {experience.map((job) => (
-            <li
-              key={`${job.company}-${job.role}`}
-              className="rounded-2xl border border-stone-200/90 bg-white/70 p-6 shadow-[0_1px_0_rgba(0,0,0,0.04)] sm:p-8"
-            >
-              <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
-                <div className="flex min-w-0 gap-3 sm:gap-4">
-                  <CompanyLogo
-                    logoSrc={job.companyLogo}
-                    name={job.company}
-                    href={job.companyLinkedIn}
-                  />
-                  <div className="min-w-0 pt-0.5">
-                    <h3 className="font-serif text-xl font-medium text-stone-900 sm:text-2xl">{job.role}</h3>
-                    <p className="mt-1 text-base font-medium text-stone-700">
-                      {job.company}
-                      <span className="font-normal text-stone-500">
-                        {" "}
-                        · {job.location}
-                      </span>
-                    </p>
-                  </div>
-                </div>
-                <p className="shrink-0 text-sm font-medium tabular-nums text-stone-500 sm:pt-0.5 sm:text-right">
+    <section id="experience" className="section hairline bg-[var(--surface-secondary)]">
+      <div className="section-inner-wide">
+        <div className="mx-auto max-w-3xl text-center md:max-w-4xl">
+          <h2 className="text-title text-[var(--foreground)]">Experience</h2>
+          <p className="mx-auto mt-3 max-w-xl text-callout text-[var(--foreground-secondary)]">
+            Tap a company to open the role — like an app on the Home Screen.
+          </p>
+        </div>
+
+        <AppGrid className="mt-14">
+          {experience.map((item, i) => (
+            <li key={`${item.company}-${item.role}`}>
+              <AppIcon
+                label={item.company.replace(/, Inc$/, "").replace(/ Technologies$/, "")}
+                src={item.companyLogo}
+                subtitle={item.period.split("–")[0]?.trim()}
+                selected={active === i}
+                onClick={() => setActive(i)}
+              />
+            </li>
+          ))}
+        </AppGrid>
+      </div>
+
+      <DetailSheet
+        open={job !== null}
+        onClose={() => setActive(null)}
+        title={job?.company ?? ""}
+      >
+        {job ? (
+          <div className="pb-2">
+            <div className="flex items-start gap-4 border-b border-[var(--separator)] pb-5">
+              <AppIconFace src={job.companyLogo} name={job.company} />
+              <div className="min-w-0 pt-0.5">
+                <p className="text-[17px] font-semibold tracking-[-0.015em] text-[var(--foreground)]">
+                  {job.role}
+                </p>
+                <p className="mt-1 text-[14px] tracking-[-0.01em] text-[var(--foreground-secondary)]">
+                  {job.location}
+                </p>
+                <p className="mt-1 text-[13px] font-medium tabular-nums tracking-[-0.01em] text-[var(--foreground-tertiary)]">
                   {job.period}
                 </p>
               </div>
-              <ul className="mt-6 list-disc space-y-3 pl-5 text-sm leading-relaxed text-stone-600 marker:text-stone-400 sm:text-base">
+            </div>
+
+            {job.bullets.length > 0 ? (
+              <ul className="mt-5 space-y-3.5">
                 {job.bullets.map((b, i) => (
-                  <li key={i}>{b}</li>
+                  <li
+                    key={i}
+                    className="relative pl-4 text-[15px] leading-[1.47] tracking-[-0.01em] text-[var(--foreground-secondary)] before:absolute before:left-0 before:top-[0.65em] before:h-1 before:w-1 before:rounded-full before:bg-[var(--foreground-tertiary)]"
+                  >
+                    {b}
+                  </li>
                 ))}
               </ul>
-            </li>
-          ))}
-        </ol>
-      </div>
+            ) : null}
+
+            <a
+              href={job.companyLinkedIn}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pressable pressable-hover mt-8 inline-flex text-[15px] font-medium tracking-[-0.01em] text-[var(--link)]"
+            >
+              View on LinkedIn
+            </a>
+          </div>
+        ) : null}
+      </DetailSheet>
     </section>
   );
 }

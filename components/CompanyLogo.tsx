@@ -28,7 +28,7 @@ export function CompanyLogo({ logoSrc, name, href }: Props) {
   const onImgError = useCallback(() => setUseFallback(true), []);
 
   const shell =
-    "flex h-[52px] w-[52px] shrink-0 items-center justify-center overflow-hidden rounded-xl border border-stone-200/90 bg-white shadow-sm transition-opacity hover:opacity-90 sm:h-14 sm:w-14";
+    "pressable flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-[12px] bg-[var(--fill)] sm:h-[52px] sm:w-[52px]";
 
   if (useFallback) {
     return (
@@ -36,10 +36,12 @@ export function CompanyLogo({ logoSrc, name, href }: Props) {
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        className={`${shell} bg-gradient-to-br from-stone-100 to-stone-200/90`}
+        className={shell}
         aria-label={`${name} — website`}
       >
-        <span className="font-semibold tracking-tight text-stone-700">{initials}</span>
+        <span className="text-[13px] font-semibold tracking-[-0.02em] text-[var(--foreground-secondary)]">
+          {initials}
+        </span>
       </a>
     );
   }

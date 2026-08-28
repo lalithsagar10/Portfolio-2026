@@ -1,44 +1,185 @@
 @import "tailwindcss";
 
 :root {
-  --surface: #f7f6f3;
-  --foreground: #1c1917;
+  /* Apple-like surfaces */
+  --surface: #ffffff;
+  --surface-secondary: #f5f5f7;
+  --foreground: #1d1d1f;
+  --foreground-secondary: #6e6e73;
+  --foreground-tertiary: #86868b;
+  --separator: rgba(0, 0, 0, 0.08);
+  --fill: rgba(0, 0, 0, 0.04);
+  --fill-strong: rgba(0, 0, 0, 0.06);
+  --link: #0066cc;
+
+  /* Materials */
+  --material: rgba(255, 255, 255, 0.72);
+  --material-border: rgba(0, 0, 0, 0.06);
+  --material-blur: 20px;
+
+  /* Emil / Apple motion tokens */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  --duration-press: 120ms;
+  --duration-ui: 200ms;
+  --duration-reveal: 500ms;
 }
 
 @theme inline {
   --color-background: var(--surface);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-fraunces), ui-serif, Georgia, serif;
-  --font-mono: ui-monospace, monospace;
+  --font-sans: var(--font-system);
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
 }
 
 html {
-  /* Offset fixed header so in-page links land below the bar (works with hash / nav clicks). */
-  scroll-padding-top: 5.5rem;
+  scroll-padding-top: 4.5rem;
 }
 
 @media (min-width: 640px) {
   html {
-    scroll-padding-top: 6rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto !important;
+    scroll-padding-top: 5rem;
   }
 }
 
 body {
   background: var(--surface);
   color: var(--foreground);
+  font-family: var(--font-system);
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* System font stack — Apple optical sizing / tracking tables on Apple platforms */
+:root {
+  --font-system: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Display type: tight leading + negative tracking (Apple typography) */
+.text-display {
+  font-size: clamp(2.75rem, 8vw, 5.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.022em;
+  font-weight: 600;
+  font-optical-sizing: auto;
+}
+
+.text-title {
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  font-weight: 600;
+}
+
+.text-headline {
+  font-size: 1.25rem;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+
+.text-body {
+  font-size: 1.0625rem;
+  line-height: 1.47;
+  letter-spacing: -0.011em;
+  font-weight: 400;
+}
+
+.text-callout {
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  letter-spacing: -0.008em;
+}
+
+.text-caption {
+  font-size: 0.75rem;
+  line-height: 1.35;
+  letter-spacing: -0.006em;
+  color: var(--foreground-tertiary);
+}
+
+/* Pressable feedback — instant on pointer-down */
+.pressable {
+  transition: transform var(--duration-press) var(--ease-out),
+    opacity var(--duration-press) var(--ease-out),
+    background-color var(--duration-ui) ease,
+    color var(--duration-ui) ease;
+}
+
+.pressable:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .pressable-hover:hover {
+    opacity: 0.72;
+  }
+}
+
+/* Floating material chrome */
+.material {
+  background: var(--material);
+  backdrop-filter: blur(var(--material-blur)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--material-blur)) saturate(180%);
+}
+
+/* Thicker sheet material — Apple Pay / iOS sheet */
+.sheet-material {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-bottom: none;
+}
+
+/* Liquid glass — translucent Dynamic Island */
+.liquid-island {
+  background: rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow:
+    0 4px 20px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    inset 0 -0.5px 0 rgba(0, 0, 0, 0.04);
+}
+
+/* Section rhythm */
+.section {
+  scroll-margin-top: 5rem;
+  padding: 5.5rem 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .section {
+    padding: 7rem 2rem;
+  }
+}
+
+.section-inner {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 42rem;
+}
+
+.section-inner-wide {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 72rem;
+}
+
+/* Soft separator — scroll-edge feel, not a hard rule */
+.hairline {
+  border-top: 1px solid var(--separator);
 }
 
 @keyframes fade-up {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -47,26 +188,73 @@ body {
 }
 
 .animate-fade-up {
-  animation: fade-up 0.7s ease-out both;
+  animation: fade-up var(--duration-reveal) var(--ease-out) both;
 }
 
 .animate-delay-1 {
-  animation-delay: 0.08s;
+  animation-delay: 60ms;
 }
 
 .animate-delay-2 {
-  animation-delay: 0.16s;
+  animation-delay: 120ms;
 }
 
 .animate-delay-3 {
-  animation-delay: 0.24s;
+  animation-delay: 180ms;
 }
 
-/* Horizontal nav: hide scrollbar but keep scroll on small desktop widths */
 .nav-scrollbar {
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
+
 .nav-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  .animate-fade-up {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .pressable:active {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .material {
+    background: #ffffff;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .sheet-material {
+    background: #ffffff;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
+  .liquid-island {
+    background: rgba(245, 245, 247, 0.95);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --material: #ffffff;
+    --separator: rgba(0, 0, 0, 0.35);
+  }
+
+  .material {
+    border: 1px solid var(--separator);
+  }
 }
