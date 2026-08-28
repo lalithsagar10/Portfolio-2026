@@ -1,53 +1,100 @@
-import { CompanyLogo } from "@/components/CompanyLogo";
+"use client";
+
+import { useState } from "react";
+import { AppIcon, AppIconFace, AppIconRow } from "@/components/AppIcon";
+import { DetailSheet } from "@/components/DetailSheet";
 import { education } from "@/lib/content";
 
+function schoolLabel(school: string) {
+  if (school.includes("Central Missouri")) return "UC Missouri";
+  if (school.includes("Anil Neerukonda")) return "ANITS";
+  const words = school.split(/\s+/).filter(Boolean);
+  if (words.length <= 2) return school;
+  return words.slice(0, 2).join(" ");
+}
+
+function degreeShort(degree: string) {
+  if (degree.startsWith("Master")) return "M.S.";
+  if (degree.startsWith("Bachelor")) return "B.Tech";
+  return degree.split(":")[0]?.trim() ?? degree;
+}
+
 export function Education() {
+  const [active, setActive] = useState<number | null>(null);
+  const entry = active !== null ? education[active] : null;
+  const logoHref =
+    entry && "logoHref" in entry && entry.logoHref ? entry.logoHref : entry?.website;
+
   return (
-    <section
-      id="education"
-      className="scroll-mt-20 border-t border-stone-200/80 px-6 py-20 sm:px-8 sm:py-24"
-    >
-      <div className="mx-auto max-w-3xl">
-        <h2 className="font-serif text-3xl font-medium tracking-tight text-stone-900 sm:text-4xl">Education</h2>
-        <ul className="mt-10 space-y-6">
-          {education.map((e) => (
-            <li
-              key={e.school}
-              className="rounded-2xl border border-stone-200/90 bg-white/70 p-6 sm:p-8"
-            >
-              <div className="flex gap-3 sm:gap-4">
-                <CompanyLogo
-                  logoSrc={e.logoSrc}
-                  name={e.school}
-                  href={"logoHref" in e && e.logoHref ? e.logoHref : e.website}
-                />
-                <div className="min-w-0 pt-0.5">
-                  <p className="font-medium text-stone-900">{e.degree}</p>
-                  <p className="mt-1 text-stone-700">
-                    <a
-                      href={e.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-medium text-stone-800 underline decoration-stone-300 underline-offset-2 transition-colors hover:decoration-stone-500"
-                    >
-                      {e.school}
-                    </a>
-                    <span className="font-normal text-stone-500">
-                      {" "}
-                      — {e.detail}
-                    </span>
-                  </p>
-                  {"gpa" in e && e.gpa ? (
-                    <p className="mt-2 text-sm text-stone-500">
-                      {"gpaLabel" in e && e.gpaLabel ? e.gpaLabel : "GPA"}: {e.gpa}
-                    </p>
-                  ) : null}
-                </div>
-              </div>
+    <section id="education" className="section hairline">
+      <div className="section-inner-wide">
+        <div className="mx-auto max-w-3xl text-center md:max-w-4xl">
+          <h2 className="text-title text-[var(--foreground)]">Education</h2>
+          <p className="mx-auto mt-3 max-w-xl text-callout text-[var(--foreground-secondary)]">
+            Tap a school to open the degree details.
+          </p>
+        </div>
+
+        <AppIconRow className="mt-14">
+          {education.map((e, i) => (
+            <li key={e.school}>
+              <AppIcon
+                label={schoolLabel(e.school)}
+                src={e.logoSrc}
+                subtitle={degreeShort(e.degree)}
+                selected={active === i}
+                onClick={() => setActive(i)}
+              />
             </li>
           ))}
-        </ul>
+        </AppIconRow>
       </div>
+
+      <DetailSheet
+        open={entry !== null}
+        onClose={() => setActive(null)}
+        title={entry ? schoolLabel(entry.school) : ""}
+      >
+        {entry ? (
+          <div className="pb-2">
+            <div className="flex items-start gap-4 border-b border-[var(--separator)] pb-5">
+              <AppIconFace src={entry.logoSrc} name={entry.school} />
+              <div className="min-w-0 pt-0.5">
+                <p className="text-[17px] font-semibold tracking-[-0.015em] text-[var(--foreground)]">
+                  {entry.degree}
+                </p>
+                <p className="mt-1 text-[14px] tracking-[-0.01em] text-[var(--foreground-secondary)]">
+                  {entry.detail}
+                </p>
+                {"gpa" in entry && entry.gpa ? (
+                  <p className="mt-1 text-[13px] font-medium tracking-[-0.01em] text-[var(--foreground-tertiary)]">
+                    {"gpaLabel" in entry && entry.gpaLabel ? entry.gpaLabel : "GPA"}: {entry.gpa}
+                  </p>
+                ) : null}
+              </div>
+            </div>
+
+            <a
+              href={entry.website}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="pressable pressable-hover mt-8 inline-flex text-[15px] font-medium tracking-[-0.01em] text-[var(--link)]"
+            >
+              Visit school website
+            </a>
+            {logoHref && logoHref !== entry.website ? (
+              <a
+                href={logoHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="pressable pressable-hover mt-4 block text-[15px] font-medium tracking-[-0.01em] text-[var(--link)]"
+              >
+                View on LinkedIn
+              </a>
+            ) : null}
+          </div>
+        ) : null}
+      </DetailSheet>
     </section>
   );
 }

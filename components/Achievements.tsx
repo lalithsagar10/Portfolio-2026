@@ -2,22 +2,16 @@ import { achievements } from "@/lib/content";
 
 export function Achievements() {
   return (
-    <section
-      id="achievements"
-      className="scroll-mt-20 border-t border-stone-200/80 px-6 py-20 sm:px-8 sm:py-24"
-    >
-      <div className="mx-auto max-w-3xl">
-        <h2 className="font-serif text-3xl font-medium tracking-tight text-stone-900 sm:text-4xl">
-          Achievements & certifications
-        </h2>
-        <ul className="mt-10 space-y-4">
+    <section id="achievements" className="section hairline bg-[var(--surface-secondary)]">
+      <div className="section-inner">
+        <h2 className="text-title text-[var(--foreground)]">Achievements & certifications</h2>
+        <ul className="mt-12 space-y-5">
           {achievements.map((item) => (
             <li
               key={item}
-              className="flex gap-3 rounded-xl border border-stone-200/80 bg-white/60 px-4 py-3 text-sm leading-relaxed text-stone-700 sm:text-base"
+              className="relative pl-4 text-body text-[var(--foreground-secondary)] before:absolute before:left-0 before:top-[0.65em] before:h-1 before:w-1 before:rounded-full before:bg-[var(--foreground-tertiary)]"
             >
-              <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500/90" aria-hidden />
-              <span>{item}</span>
+              {item}
             </li>
           ))}
         </ul>

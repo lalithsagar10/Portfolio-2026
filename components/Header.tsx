@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { DynamicIsland } from "@/components/DynamicIsland";
 import { site } from "@/lib/content";
 
 const nav = [
@@ -17,19 +18,22 @@ const nav = [
 
 const sectionIds = nav.map((item) => item.href.slice(1));
 
-/** Viewport line (px from top): section “wins” when its top has crossed this. */
+const sectionLabel: Record<string, string> = {
+  home: "Home",
+  ...Object.fromEntries(nav.map((item) => [item.href.slice(1), item.label])),
+};
+
 const SCROLL_ACTIVE_OFFSET = 100;
 
 type Highlight = { left: number; top: number; width: number; height: number };
 
 type HeaderProps = {
-  /** Public URL for the résumé PDF in `public/Resume/`, or null to hide the button. */
   resumeHref: string | null;
 };
 
 function MenuIcon() {
   return (
-    <svg className="h-5 w-5 sm:h-[22px] sm:w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
+    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
       <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
     </svg>
   );
@@ -37,7 +41,7 @@ function MenuIcon() {
 
 function CloseIcon() {
   return (
-    <svg className="h-5 w-5 sm:h-[22px] sm:w-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
+    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden>
       <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
     </svg>
   );
@@ -45,8 +49,9 @@ function CloseIcon() {
 
 export function Header({ resumeHref }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState<string>(sectionIds[0]);
+  const [activeSection, setActiveSection] = useState<string>("home");
   const [highlight, setHighlight] = useState<Highlight | null>(null);
+  const [scrolled, setScrolled] = useState(false);
 
   const navInnerRef = useRef<HTMLDivElement>(null);
   const linkRefs = useRef<Record<string, HTMLAnchorElement | null>>({});
@@ -87,7 +92,7 @@ export function Header({ resumeHref }: HeaderProps) {
   useEffect(() => {
     let raf = 0;
     const compute = () => {
-      let current = sectionIds[0];
+      let current = "home";
       for (const id of sectionIds) {
         const el = document.getElementById(id);
         if (!el) continue;
@@ -95,6 +100,7 @@ export function Header({ resumeHref }: HeaderProps) {
         if (top <= SCROLL_ACTIVE_OFFSET) current = id;
       }
       setActiveSection((prev) => (prev === current ? prev : current));
+      setScrolled(window.scrollY > 8);
     };
 
     const onScroll = () => {
@@ -122,88 +128,93 @@ export function Header({ resumeHref }: HeaderProps) {
     if (href.startsWith("#")) setActiveSection(href.slice(1));
   }, []);
 
-  const glassBar =
-    "rounded-2xl border border-white/55 bg-white/40 shadow-[0_6px_28px_-10px_rgba(15,23,42,0.12),inset_0_1px_0_rgba(255,255,255,0.7)] backdrop-blur-2xl backdrop-saturate-[1.35]";
-
-  const glassBtn =
-    "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/50 bg-white/35 text-stone-800 shadow-[inset_0_1px_0_rgba(255,255,255,0.55)] backdrop-blur-xl transition-[transform,background-color,border-color] duration-200 hover:scale-[1.03] hover:bg-white/55 active:scale-[0.98]";
-
-  const navPill =
-    "relative z-10 shrink-0 whitespace-nowrap rounded-full px-3 py-2 text-xs font-medium tracking-tight text-stone-800 transition-[color,transform] duration-200 hover:text-stone-900 active:scale-[0.98] sm:px-3.5 sm:py-2 sm:text-[13px]";
-
-  const highlightClass =
-    "pointer-events-none absolute z-0 rounded-full bg-gradient-to-r from-white/75 via-amber-50/50 to-white/75 shadow-[0_2px_14px_-4px_rgba(120,113,108,0.25),inset_0_1px_0_rgba(255,255,255,0.9)] ring-1 ring-white/70 transition-[left,top,width,height,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none";
+  const brand = site.name.split(" ").filter(Boolean).slice(-1)[0] ?? site.name;
+  const islandLabel = sectionLabel[activeSection] ?? "Home";
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 px-3 pt-3 sm:px-6 sm:pt-3.5">
-        <div className={`flex min-h-12 h-12 w-full items-center gap-2.5 px-3 sm:min-h-14 sm:h-14 sm:gap-3 sm:px-5 ${glassBar}`}>
-          <Link
-            href="#"
-            onClick={closeMenu}
-            className="shrink-0 rounded-full px-2.5 py-1 font-serif text-[15px] font-medium uppercase tracking-tight text-stone-900 transition-opacity hover:opacity-70 sm:text-base"
-          >
-            {site.name.split(" ").filter(Boolean).slice(-1)[0] ?? site.name}
-          </Link>
-
-          <nav
-            className="nav-scrollbar relative hidden min-h-0 min-w-0 flex-1 overflow-x-auto lg:block"
-            aria-label="Primary"
-          >
-            <div
-              ref={navInnerRef}
-              className="relative mx-auto flex min-h-11 w-max max-w-full items-center justify-center gap-1 sm:min-h-12 sm:gap-1.5"
+      <header className="fixed inset-x-0 top-0 z-50">
+        <div
+          className={`material border-b transition-[border-color,box-shadow] duration-[var(--duration-ui)] ease-[var(--ease-out)] ${
+            scrolled ? "border-[var(--material-border)] shadow-[0_1px_0_rgba(0,0,0,0.03)]" : "border-transparent"
+          }`}
+        >
+          {/*
+            Mobile (< lg): 3-column row — brand | island | menu.
+            Desktop (lg+): brand + nav only; island hidden.
+          */}
+          <div className="relative mx-auto grid h-12 max-w-6xl grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 px-3 sm:h-14 sm:px-5 lg:flex lg:gap-3 lg:px-6">
+            <Link
+              href="#"
+              onClick={closeMenu}
+              className="pressable pressable-hover z-10 min-w-0 justify-self-start truncate text-[15px] font-semibold tracking-[-0.02em] text-[var(--foreground)] lg:shrink-0"
             >
-              {highlight && highlight.width > 0 ? (
-                <span
-                  aria-hidden
-                  className={highlightClass}
-                  style={{
-                    left: highlight.left,
-                    top: highlight.top,
-                    width: highlight.width,
-                    height: highlight.height,
-                    opacity: 1,
-                  }}
-                />
-              ) : null}
-              {nav.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  ref={(el) => {
-                    linkRefs.current[item.href.slice(1)] = el;
-                  }}
-                  className={navPill}
-                  onClick={() => setSectionFromClick(item.href)}
-                >
-                  {item.label}
-                </Link>
-              ))}
-              {resumeHref ? (
-                <a
-                  href={resumeHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`${navPill} border border-white/40 bg-white/20 hover:bg-stone-900/10`}
-                >
-                  Resume
-                </a>
-              ) : null}
+              {brand}
+            </Link>
+
+            <div className="z-20 flex justify-center justify-self-center lg:hidden">
+              <DynamicIsland sectionKey={activeSection} label={islandLabel} />
             </div>
-          </nav>
 
-          <div className="ml-auto flex shrink-0 items-center gap-1 sm:gap-1.5 lg:ml-0">
-            <button
-              type="button"
-              className={`${glassBtn} lg:hidden`}
-              aria-expanded={menuOpen}
-              aria-controls="mobile-nav"
-              aria-label={menuOpen ? "Close menu" : "Open menu"}
-              onClick={() => setMenuOpen((o) => !o)}
+            <nav
+              className="nav-scrollbar relative hidden min-h-0 min-w-0 flex-1 overflow-x-auto lg:block"
+              aria-label="Primary"
             >
-              {menuOpen ? <CloseIcon /> : <MenuIcon />}
-            </button>
+              <div
+                ref={navInnerRef}
+                className="relative mx-auto flex w-max max-w-full items-center justify-center gap-0.5"
+              >
+                {highlight && highlight.width > 0 ? (
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute z-0 rounded-full bg-[var(--fill-strong)] transition-[left,top,width,height,opacity] duration-[var(--duration-ui)] ease-[var(--ease-out)] motion-reduce:transition-none"
+                    style={{
+                      left: highlight.left,
+                      top: highlight.top,
+                      width: highlight.width,
+                      height: highlight.height,
+                      opacity: 1,
+                    }}
+                  />
+                ) : null}
+                {nav.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    ref={(el) => {
+                      linkRefs.current[item.href.slice(1)] = el;
+                    }}
+                    className="pressable relative z-10 shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-[13px] font-medium tracking-[-0.01em] text-[var(--foreground-secondary)] hover:text-[var(--foreground)] sm:px-3.5"
+                    onClick={() => setSectionFromClick(item.href)}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+                {resumeHref ? (
+                  <a
+                    href={resumeHref}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="pressable relative z-10 shrink-0 whitespace-nowrap rounded-full px-3 py-1.5 text-[13px] font-semibold tracking-[-0.01em] text-[var(--foreground)] sm:px-3.5"
+                  >
+                    Resume
+                  </a>
+                ) : null}
+              </div>
+            </nav>
+
+            <div className="z-10 flex shrink-0 items-center justify-self-end lg:ml-0">
+              <button
+                type="button"
+                className="pressable inline-flex h-9 w-9 items-center justify-center rounded-full text-[var(--foreground)] lg:hidden"
+                aria-expanded={menuOpen}
+                aria-controls="mobile-nav"
+                aria-label={menuOpen ? "Close menu" : "Open menu"}
+                onClick={() => setMenuOpen((o) => !o)}
+              >
+                {menuOpen ? <CloseIcon /> : <MenuIcon />}
+              </button>
+            </div>
           </div>
         </div>
       </header>
@@ -215,14 +226,16 @@ export function Header({ resumeHref }: HeaderProps) {
       >
         <button
           type="button"
-          className={`absolute inset-0 bg-stone-900/20 backdrop-blur-sm transition-opacity duration-300 ${menuOpen ? "opacity-100" : "opacity-0"}`}
+          className={`absolute inset-0 bg-black/20 transition-opacity duration-[var(--duration-ui)] ease-[var(--ease-out)] ${menuOpen ? "opacity-100" : "opacity-0"}`}
           onClick={closeMenu}
           aria-label="Close menu overlay"
         />
         <div
-          className={`absolute left-3 right-3 top-[4.5rem] overflow-hidden rounded-2xl border border-white/50 bg-white/40 shadow-[0_24px_64px_-16px_rgba(15,23,42,0.25)] backdrop-blur-2xl backdrop-saturate-[1.4] transition-[opacity,transform] duration-300 ease-out sm:left-4 sm:right-4 sm:top-[4.75rem] ${menuOpen ? "translate-y-0 opacity-100" : "-translate-y-3 opacity-0"}`}
+          className={`material absolute left-3 right-3 top-[3.75rem] overflow-hidden rounded-2xl border border-[var(--material-border)] shadow-[0_16px_48px_-12px_rgba(0,0,0,0.18)] transition-[opacity,transform] duration-[var(--duration-ui)] ease-[var(--ease-drawer)] sm:left-4 sm:right-4 ${
+            menuOpen ? "translate-y-0 opacity-100" : "translate-y-2 opacity-0"
+          }`}
         >
-          <nav className="flex max-h-[min(70vh,520px)] flex-col gap-1 overflow-y-auto p-3" aria-label="Mobile primary">
+          <nav className="flex max-h-[min(70vh,520px)] flex-col gap-0.5 overflow-y-auto p-2" aria-label="Mobile primary">
             {nav.map((item) => {
               const id = item.href.slice(1);
               const isActive = activeSection === id;
@@ -234,16 +247,27 @@ export function Header({ resumeHref }: HeaderProps) {
                     setSectionFromClick(item.href);
                     closeMenu();
                   }}
-                  className={`rounded-2xl px-4 py-3.5 text-base font-medium transition-[background-color,box-shadow,color] duration-300 ease-out ${
+                  className={`pressable rounded-xl px-4 py-3 text-[17px] font-medium tracking-[-0.015em] transition-[background-color,color] duration-[var(--duration-ui)] ease ${
                     isActive
-                      ? "bg-gradient-to-r from-white/80 via-amber-50/45 to-white/80 text-stone-900 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] ring-1 ring-white/60"
-                      : "text-stone-800 hover:bg-white/55"
+                      ? "bg-[var(--fill-strong)] text-[var(--foreground)]"
+                      : "text-[var(--foreground-secondary)]"
                   }`}
                 >
                   {item.label}
                 </Link>
               );
             })}
+            {resumeHref ? (
+              <a
+                href={resumeHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={closeMenu}
+                className="pressable rounded-xl px-4 py-3 text-[17px] font-semibold tracking-[-0.015em] text-[var(--foreground)]"
+              >
+                Resume
+              </a>
+            ) : null}
           </nav>
         </div>
       </div>

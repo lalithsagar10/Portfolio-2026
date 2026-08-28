@@ -96,10 +96,10 @@ export const experience = [
     location: "MA, United States",
     period: "Sep 2025 – Jun 2026",
     bullets: [
-      "Owned and scaled backend systems end-to-end, from architecture and API design through deployment and monitoring, while collaborating closely on UI/UX flows for fast, intuitive experiences.",
-      "Built asynchronous, event-driven workflows with queues and workers for concurrent AI-powered requests and real-time user interactions under production traffic.",
-      "Designed resilient backend services with reliability and uptime as core goals; proactively debugged, triaged, and resolved production incidents.",
-      "Led full-stack development of a production SaaS product using React, Node.js, and Supabase—integrating AI APIs, reducing OpenAI costs by 25%, implementing image-generation pipelines, and instrumenting analytics with Google Analytics and Google Tag Manager.",
+      "Owned backend systems end-to-end—architecture, APIs, deploy, and UI/UX—for a production SaaS.",
+      "Built event-driven queues and workers for concurrent AI requests and real-time traffic.",
+      "Prioritized uptime; triaged and fixed production incidents quickly.",
+      "Shipped React, Node.js, and Supabase stack—25% lower OpenAI costs, image pipelines, GA/GTM.",
     ],
   },
   {
@@ -110,10 +110,10 @@ export const experience = [
     location: "Delaware, United States",
     period: "Sep 2025 – Present",
     bullets: [
-      "Architected an agentic AI-powered shopping platform that reduced cross-site product research time by 40%, using LangGraph for multi-agent reasoning (search, summarization, ranking, comparison).",
-      "Designed distributed, event-driven orchestration with asynchronous tasks to coordinate autonomous AI agents for scalable, fault-tolerant multi-step queries.",
-      "Implemented semantic search with vector embeddings and MongoDB-backed indexes; integrated DuckDuckGo, Serper, and Tavily for discovery, reviews, and recommendations.",
-      "Building real-time, low-latency AI pipelines on AWS with Docker and CI/CD, LLM guardrails, and cost controls for concurrency under load.",
+      "Agentic shopping platform with LangGraph—40% less cross-site research time.",
+      "Async orchestration for multi-agent queries at scale.",
+      "Semantic search with embeddings; DuckDuckGo, Serper, and Tavily integrations.",
+      "Real-time AI on AWS (Docker, CI/CD) with guardrails and cost controls.",
     ],
   },
   {
@@ -125,10 +125,10 @@ export const experience = [
     location: "California, United States",
     period: "Jul 2025 – Oct 2025",
     bullets: [
-      "Engineered full-stack apps and internal tools with Next.js, TypeScript, and Tailwind CSS—improving UI load times by ~30% and delivering scalable APIs with real-time updates and Supabase-backed PostgreSQL sync (~25% better sync efficiency).",
-      "Optimized PostgreSQL schemas, indexes, and queries (Supabase) for performance and reliability under high throughput.",
-      "Partnered with PMs, designers, and cross-functional teams in Agile sprints—accelerating delivery and reducing iteration cycles by ~35%.",
-      "Deployed containerized services on AWS with Docker and CI/CD—faster, safer releases with ~40% faster deployments and ~30% better reliability.",
+      "Next.js and TypeScript apps—~30% faster UI, real-time APIs, Supabase sync.",
+      "Optimized PostgreSQL schemas and queries for high-throughput workloads.",
+      "Cross-functional Agile delivery—~35% shorter iteration cycles.",
+      "AWS + Docker CI/CD—~40% faster deploys, ~30% more reliable releases.",
     ],
   },
   {
@@ -139,8 +139,8 @@ export const experience = [
     location: "India",
     period: "Sep 2022 – Nov 2022",
     bullets: [
-      "Developed and maintained backend integrations between EHR systems and healthcare appointment platforms, improving appointment processing efficiency by 35% through optimized REST API workflows and data synchronization.",
-      "Engineered scalable backend services and database query optimizations that reduced data inconsistencies by 40% while supporting real-time patient record updates and appointment scheduling across multiple healthcare systems.",
+      "EHR ↔ appointment integrations via REST—35% faster processing.",
+      "Backend and DB tuning—40% fewer data issues, real-time patient updates.",
     ],
   },
 ] as const;

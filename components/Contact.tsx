@@ -3,43 +3,37 @@ import { site } from "@/lib/content";
 
 export function Contact() {
   return (
-    <section
-      id="contact"
-      className="scroll-mt-20 border-t border-stone-200/80 px-6 py-20 sm:px-8 sm:py-28"
-    >
-      <div className="mx-auto max-w-3xl">
-        <h2 className="font-serif text-3xl font-medium tracking-tight text-stone-900 sm:text-4xl">Contact</h2>
-        <p className="mt-4 max-w-lg text-base leading-relaxed text-stone-600 sm:text-lg">
+    <section id="contact" className="section hairline">
+      <div className="section-inner text-center sm:text-left">
+        <h2 className="text-title text-[var(--foreground)]">Contact</h2>
+        <p className="mx-auto mt-4 max-w-lg text-body text-[var(--foreground-secondary)] sm:mx-0">
           Open to roles and collaborations. Reach out by email or phone—I will get back to you as soon as I can.
         </p>
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-6">
+        <div className="mt-10 flex flex-col items-center gap-4 sm:items-start">
           <Link
             href={`mailto:${site.email}`}
-            className="w-fit text-base font-medium text-stone-900 underline decoration-stone-300 underline-offset-4 transition-colors hover:decoration-stone-500"
+            className="pressable pressable-hover text-[21px] font-semibold tracking-[-0.02em] text-[var(--link)] sm:text-[24px]"
           >
             {site.email}
           </Link>
           <Link
             href={`tel:${site.phoneTel}`}
-            className="w-fit text-base font-medium text-stone-800 transition-colors hover:text-stone-600"
+            className="pressable pressable-hover text-[17px] font-medium tracking-[-0.015em] text-[var(--foreground)]"
           >
             {site.phone}
           </Link>
+          <p className="text-caption">{site.location}</p>
         </div>
-        <p className="mt-4 text-sm text-stone-500">
-          {site.location}
-        </p>
-        <ul className="mt-10 flex flex-wrap gap-6 text-sm font-medium text-stone-600">
+        <ul className="mt-10 flex flex-wrap justify-center gap-6 text-[15px] font-medium tracking-[-0.01em] text-[var(--foreground-secondary)] sm:justify-start">
           {site.social.map((s) => (
             <li key={s.href}>
               <Link
                 href={s.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="transition-colors hover:text-stone-900"
+                className="pressable pressable-hover"
               >
                 {s.label}
-                <span className="ml-0.5 text-stone-400">↗</span>
               </Link>
             </li>
           ))}
