@@ -152,81 +152,178 @@ export const achievements = [
   "Smart India Hackathon Winner — Blockchain and decentralization of tax collections",
 ] as const;
 
-export const competencyGroups = [
+export type CompetencyGroup = {
+  title: string;
+  /** Stable key for icon mapping */
+  id:
+    | "languages"
+    | "backend"
+    | "databases"
+    | "realtime"
+    | "apis"
+    | "design"
+    | "security"
+    | "ai"
+    | "cloud"
+    | "testing";
+  items: readonly string[];
+};
+
+export const competencyGroups: readonly CompetencyGroup[] = [
   {
-    title: "Programming languages",
+    id: "languages",
+    title: "Languages & Frameworks",
     items: [
       "Python",
-      "Java (Spring Boot)",
-      "C#",
-      "SQL",
-      "HTML",
-      "Tailwind CSS",
-      "JavaScript",
       "TypeScript",
-      "REST APIs",
-    ],
-  },
-  {
-    title: "Skills",
-    items: [
-      "Data Structures & Algorithms",
-      "UI/UX design",
-      "Data modelling",
-      "Data mining",
-      "Data visualization",
-      "AI",
-      "LangChain",
-      "Machine learning",
-    ],
-  },
-  {
-    title: "Tools & platforms",
-    items: [
-      "VS Code",
-      "Jupyter",
-      "Colab",
-      "Linux",
-      "Git",
-      "Jira",
-      "Selenium",
-      "JUnit",
-      "GenAI",
-      "Vector databases",
-      "Spring Boot",
-      "Cursor",
-      "Stripe",
-      "Material UI",
-    ],
-  },
-  {
-    title: "Frameworks & libraries",
-    items: [
+      "JavaScript",
       "React",
+      "Next.js",
+      "Node.js",
+      "FastAPI",
       "Flask",
-      "TensorFlow",
-      "scikit-learn",
-      "Pandas",
-      "Keras",
-      "Matplotlib",
-      "Seaborn",
-      "Tableau",
-      "MongoDB",
+      "Spring Boot",
+      "Tailwind CSS",
     ],
   },
   {
-    title: "Coursework",
+    id: "backend",
+    title: "Backend & Distributed Systems",
     items: [
-      "Relational databases",
-      "Cloud computing",
-      "Operating systems",
-      "SDLC & Agile (Scrum)",
-      "Advanced software engineering",
+      "REST APIs",
+      "GraphQL",
+      "Microservices",
+      "System Design",
+      "Event-Driven Architecture",
+      "Kafka",
+      "WebSockets",
+      "Async Processing",
     ],
   },
   {
-    title: "Soft skills",
-    items: ["Teamwork & collaboration", "Communication"],
+    id: "databases",
+    title: "Databases",
+    items: [
+      "MongoDB",
+      "PostgreSQL",
+      "MySQL",
+      "Redis",
+      "Neo4j",
+      "Supabase",
+      "Pinecone",
+      "FAISS",
+      "Vector Search",
+    ],
+  },
+  {
+    id: "realtime",
+    title: "Real-Time & Event-Driven",
+    items: [
+      "WebSockets",
+      "Kafka",
+      "Event-Driven Microservices",
+      "Async Processing",
+      "Distributed Systems",
+      "RAG Pipelines",
+      "Chat Orchestration",
+      "SEO",
+      "Custom Analytics",
+    ],
+  },
+  {
+    id: "apis",
+    title: "API Integration",
+    items: [
+      "RESTful APIs",
+      "ERP / CRM",
+      "GraphQL",
+      "Redis",
+      "Stripe",
+      "In-App Purchases",
+      "HubSpot",
+      "OpenAI",
+      "Claude API",
+      "Web Scraping",
+      "Tavily",
+    ],
+  },
+  {
+    id: "design",
+    title: "Design & UX",
+    items: [
+      "Figma",
+      "Wireframing",
+      "App Screen Design",
+      "Responsive Design",
+      "Design Systems",
+      "Component Libraries",
+      "UX Principles",
+      "Core Web Vitals",
+    ],
+  },
+  {
+    id: "security",
+    title: "Security",
+    items: [
+      "OAuth2",
+      "JWT",
+      "Authentication",
+      "Authorization",
+      "Privacy",
+      "Secure Deployment",
+    ],
+  },
+  {
+    id: "ai",
+    title: "AI / LLM",
+    items: [
+      "LangChain",
+      "LangGraph",
+      "Embeddings",
+      "Fine-tuning",
+      "MCP",
+      "ML Inference",
+      "RAG Pipelines",
+      "LLM-Agnostic Architecture",
+      "Agentic Orchestration",
+      "Prompt Engineering",
+    ],
+  },
+  {
+    id: "cloud",
+    title: "Cloud & DevOps",
+    items: [
+      "AWS EC2",
+      "AWS RDS",
+      "AWS S3",
+      "CloudFront",
+      "Cognito",
+      "CloudWatch",
+      "NGINX",
+      "Docker",
+      "Kubernetes",
+      "CI/CD",
+      "Git",
+      "GCP",
+      "Jira",
+      "Agile / Scrum",
+      "Linux",
+      "Netlify",
+      "Vercel",
+    ],
+  },
+  {
+    id: "testing",
+    title: "Testing & Observability",
+    items: [
+      "Unit Testing",
+      "Integration Testing",
+      "CloudWatch",
+      "Logging",
+      "Error Monitoring",
+      "GA4 Analytics",
+      "GTM",
+    ],
   },
 ] as const;
 
